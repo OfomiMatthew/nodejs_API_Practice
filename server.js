@@ -29,6 +29,29 @@ http
         res.end("No data found!");
       }
       res.end(JSON.stringify(productData));
+    } else if (
+      parsedUrl.pathname == "/products" &&
+      req.method == "POST"
+    ) {
+      let productData = "";
+      req.on("data", (chunk) => {
+        productData += chunk;
+      });
+
+      req.on("end", () => {
+        // console.log(productData);
+        let productArr = JSON.parse(product)
+        let newData = JSON.parse(productData)
+        productArr.push(newData)
+        fs.writeFile('./product.json',JSON.stringify(productArr),(err)=>{
+          if(err){
+            res.end(err)
+          }else{
+            res.end("Product added");
+          }
+        })
+      });
+
     }
   })
 
