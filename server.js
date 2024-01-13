@@ -29,10 +29,7 @@ http
         res.end("No data found!");
       }
       res.end(JSON.stringify(productData));
-    } else if (
-      parsedUrl.pathname == "/products" &&
-      req.method == "POST"
-    ) {
+    } else if (parsedUrl.pathname == "/products" && req.method == "POST") {
       let productData = "";
       req.on("data", (chunk) => {
         productData += chunk;
@@ -40,18 +37,60 @@ http
 
       req.on("end", () => {
         // console.log(productData);
-        let productArr = JSON.parse(product)
-        let newData = JSON.parse(productData)
-        productArr.push(newData)
-        fs.writeFile('./product.json',JSON.stringify(productArr),(err)=>{
-          if(err){
-            res.end(err)
-          }else{
+        let productArr = JSON.parse(product);
+        let newData = JSON.parse(productData);
+        productArr.push(newData);
+        fs.writeFile("./product.json", JSON.stringify(productArr), (err) => {
+          if (err) {
+            res.end(err);
+          } else {
             res.end("Product added");
           }
-        })
+        });
+      });
+    } else if (parsedUrl.pathname == "/products" && req.method == "DELETE") {
+      let id = parsedUrl.query.id;
+      let productArray = JSON.parse(product);
+      let indexProduct = productArray.findIndex((el) => {
+        return el.id == id;
+      });
+      productArray.splice(indexProduct, 1);
+      fs.writeFile("./product.json", JSON.stringify(productArray), (err) => {
+        if (err) {
+          console.log(err);
+        } else {
+          res.end(JSON.stringify({ message: "data deleted" }));
+        }
+      });
+    } 
+    else if (parsedUrl.pathname === "/products" && req.method == "PUT") {
+      // let id = parsedUrl.query.id;
+      let products = "";
+      req.on("data", (chunk) => {
+        products += chunk;
       });
 
+      req.on("end", () => {
+        let productArr = JSON.parse(product);
+        let productOBJ = JSON.parse(products);
+        let indexItem = productArr.findIndex((p) => {
+          return p.id == parsedUrl.query.id;
+        });
+        if (indexItem !== -1) {
+          productArr[indexItem] = productOBJ;
+          fs.writeFile("./product.json", JSON.stringify(productArr), (err) => {
+            if (err) {
+              console.log(err);
+            } 
+            else {
+              res.end(JSON.stringify({ "message": "Data updated" }));
+            }
+          });
+        } 
+        else {
+          res.end(JSON.stringify({ message: "no data dound" }));
+        }
+      });
     }
   })
 
