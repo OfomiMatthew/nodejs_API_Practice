@@ -8,13 +8,18 @@ http
   .createServer((req, res) => {
     let parsedUrl = url.parse(req.url, true);
     let product = fs.readFileSync("./product.json", "utf-8");
-    console.log(parsedUrl);
+    res.setHeader('Access-Control-Allow-Origin',"*")
+    // console.log(parsedUrl);
+    // get all data
     if (
       parsedUrl.pathname == "/products" &&
       parsedUrl.query.id === undefined &&
       req.method == "GET"
     ) {
+     
       res.end(product);
+     
+      // get single data
     } else if (
       parsedUrl.pathname == "/products" &&
       parsedUrl.query.id !== undefined &&
@@ -29,6 +34,7 @@ http
         res.end("No data found!");
       }
       res.end(JSON.stringify(productData));
+      // post data
     } else if (parsedUrl.pathname == "/products" && req.method == "POST") {
       let productData = "";
       req.on("data", (chunk) => {
@@ -48,6 +54,7 @@ http
           }
         });
       });
+      // delete a data
     } else if (parsedUrl.pathname == "/products" && req.method == "DELETE") {
       let id = parsedUrl.query.id;
       let productArray = JSON.parse(product);
@@ -63,6 +70,7 @@ http
         }
       });
     } 
+    // data updated
     else if (parsedUrl.pathname === "/products" && req.method == "PUT") {
       // let id = parsedUrl.query.id;
       let products = "";
@@ -88,7 +96,7 @@ http
           });
         } 
         else {
-          res.end(JSON.stringify({ message: "no data dound" }));
+          res.end(JSON.stringify({ message: "no data found" }));
         }
       });
     }
