@@ -8,7 +8,8 @@ http
   .createServer((req, res) => {
     let parsedUrl = url.parse(req.url, true);
     let product = fs.readFileSync("./product.json", "utf-8");
-    res.setHeader('Access-Control-Allow-Origin',"*")
+    res.setHeader("Access-Control-Allow-Origin", "*");
+    res.setHeader("Access-Control-Allow-Headers", "*");
     // console.log(parsedUrl);
     // get all data
     if (
@@ -16,9 +17,8 @@ http
       parsedUrl.query.id === undefined &&
       req.method == "GET"
     ) {
-     
       res.end(product);
-     
+
       // get single data
     } else if (
       parsedUrl.pathname == "/products" &&
@@ -69,7 +69,7 @@ http
           res.end(JSON.stringify({ message: "data deleted" }));
         }
       });
-    } 
+    }
     // data updated
     else if (parsedUrl.pathname === "/products" && req.method == "PUT") {
       // let id = parsedUrl.query.id;
@@ -89,13 +89,11 @@ http
           fs.writeFile("./product.json", JSON.stringify(productArr), (err) => {
             if (err) {
               console.log(err);
-            } 
-            else {
-              res.end(JSON.stringify({ "message": "Data updated" }));
+            } else {
+              res.end(JSON.stringify({ message: "Data updated" }));
             }
           });
-        } 
-        else {
+        } else {
           res.end(JSON.stringify({ message: "no data found" }));
         }
       });
