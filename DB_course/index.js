@@ -14,9 +14,18 @@ mongoose
 
 // creating a schema
 const userSchema = mongoose.Schema({
-  name: String,
-  age: Number,
-});
+  name: {
+    type: String,
+    required: true,
+  },
+
+  age: {
+    type: Number,
+    required: true,
+    min: 20,
+    max: 100,
+  },
+},{timestamps:true});
 
 // create a model - object that gives a functionality that helps you to work on the collections
 // model is a connection between your program and collection
@@ -24,9 +33,10 @@ const userSchema = mongoose.Schema({
 const userModel = mongoose.model("users", userSchema);
 
 // inserting data
+
 let user = {
-  name: "Ray",
-  age: 25,
+  name: "Thea",
+  age: 45,
 };
 
 userModel
@@ -38,3 +48,33 @@ userModel
   .catch((err) => {
     console.log(err.message);
   });
+
+// fetching data
+// userModel
+//   .find().sort({age:-1})
+//   .then((data) => {
+//     console.log(data);
+//   })
+//   .catch((err) => {
+//     console.log(err);
+//   });
+
+// delete operation
+// userModel
+//   .deleteOne({ age: 100 })
+//   .then((info) => {
+//     console.log(info);
+//   })
+//   .catch((err) => {
+//     console.log(err);
+//   });
+
+// update operation
+// userModel
+//   .updateOne({ name: "Oliver" }, { age: 44 })
+//   .then((info) => {
+//     console.log(info);
+//   })
+//   .catch((err) => {
+//     console.log(err);
+//   });
